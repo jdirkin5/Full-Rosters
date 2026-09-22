@@ -1,8 +1,12 @@
 # Meta Ads Management from Claude Code
 
-Goal: describe a campaign in plain language, have Claude Code assemble it in the
-Meta ad account through the Marketing API, and leave everything PAUSED for a
-human to review and switch on.
+Goal: describe a campaign in plain language, have Claude Code assemble and
+manage it in the Meta ad account through the Marketing API, and keep the big
+decisions (activation, budget swings, deletes) behind an explicit human
+approval.
+
+Decisions made 2026-09-22: Python; full read/write from day one; approval
+gate instead of "human clicks activate in Ads Manager".
 
 ## Architecture
 
@@ -21,7 +25,7 @@ Layers, all inside `meta_ads/` (Python package):
 | Transport | `client.py` | HTTPS to `graph.facebook.com/<version>`, token auth, pagination, rate-limit backoff, error mapping |
 | Resources | `accounts.py`, `campaigns.py`, `adsets.py`, `ads.py`, `creatives.py`, `audiences.py`, `insights.py` | One thin module per Marketing API object, field lists chosen for compact output |
 | Spec | `spec.py` | A YAML/JSON campaign spec (objective, audience, budget, creative, dates) validated with pydantic, then built into campaign -> ad set -> creative -> ad |
-| Guardrails | `safety.py` | Every create is `status=PAUSED`. Activation is refused. Budgets above a configured cap are refused. Writes only go to allowlisted ad account IDs. `--dry-run` prints the calls without sending. |
+| Guardrails | `safety.py` + `approvals.py` | Every create is `status=PAUSED`. Activation, budget changes over 10%, and deletes stop with an approval id; the same command re-run with `--approve <id>` after the owner says yes applies it. Optional hard daily ceiling. Writes only go to allowlisted ad account IDs. `--dry-run` on every write. |
 | Audit | `audit.py` | Appends every write (endpoint, payload, response id, timestamp) to `.meta-ads/audit.jsonl` |
 | CLI | `cli.py` | `meta-ads whoami`, `meta-ads campaigns list`, `meta-ads build spec.yaml`, `meta-ads insights ...` |
 | Claude instructions | `CLAUDE.md` + `.claude/skills/meta-ads/SKILL.md` | Tells future sessions which commands exist, so Claude never has to read source to operate the tool |
@@ -53,7 +57,7 @@ Two different tokens matter.
   web, set it as a secret on the environment. Locally, a git-ignored `.env`.
   Never in the repo, never in the audit log, never echoed by the CLI.
 - Companion config: `META_AD_ACCOUNT_ID` (`act_...`), `META_PAGE_ID`,
-  `META_API_VERSION`, `META_MAX_DAILY_BUDGET_CENTS`.
+  `META_API_VERSION`, `META_MAX_DAILY_BUDGET`, `META_BUDGET_CHANGE_APPROVAL_PCT`.
 
 ### 2. Claude's context tokens (cost per session)
 
@@ -68,13 +72,23 @@ Two different tokens matter.
 ## Safety rules (enforced in code, not by convention)
 
 1. Every campaign, ad set, and ad is created with `status=PAUSED`.
-2. The CLI has no command that sets a status to `ACTIVE`.
-3. Daily and lifetime budgets above `META_MAX_DAILY_BUDGET_CENTS` are rejected.
-4. Writes are only sent to ad account IDs in the allowlist.
-5. `--dry-run` is available on every write command.
-6. Every write is appended to the audit log.
+2. Setting any status to `ACTIVE` requires an approval id. Pausing never does.
+3. Budget changes over `META_BUDGET_CHANGE_APPROVAL_PCT` (default 10%) in
+   either direction, or a new budget where none existed, require approval.
+4. Deletes require approval.
+5. An approval id is a hash of the exact change, is consumed on use, and
+   expires after 24h. Approving one change never authorises another.
+6. A daily budget above `META_MAX_DAILY_BUDGET` (if set) is refused outright.
+7. Writes are only sent to ad account IDs in the allowlist.
+8. `--dry-run` is available on every write command.
+9. Every write, dry-run, and refusal is appended to `.meta-ads/audit.jsonl`.
 
-## Build steps
+The gate is a tool-level control: Claude cannot apply a gated change without
+an id that only appears after the command has been run once and the summary
+shown. `CLAUDE.md` adds the human-side rule: Claude only passes `--approve`
+after the owner has said yes to that summary.
+
+## Build steps (steps 1 to 6 are done; step 0 is yours)
 
 ### Step 0: Meta side (you do this once, roughly 20 minutes)
 

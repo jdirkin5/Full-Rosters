@@ -1,0 +1,39 @@
+# Example spec for `meta-ads build examples/campaign.yaml`.
+# Money is in whole currency units (25 = $25.00). Everything is created PAUSED.
+
+name: Fall Tryouts 2026
+objective: OUTCOME_LEADS          # OUTCOME_TRAFFIC | OUTCOME_LEADS | OUTCOME_SALES | OUTCOME_ENGAGEMENT | OUTCOME_AWARENESS
+special_ad_categories: []         # HOUSING, CREDIT, EMPLOYMENT, ISSUES_ELECTIONS_POLITICS if applicable
+
+budget:
+  daily: 25                       # or `lifetime: 500` (then every ad set needs end_time)
+  level: adset                    # adset (default) or campaign (Advantage campaign budget)
+
+adsets:
+  - name: Parents within 25 miles
+    optimization_goal: LEAD_GENERATION   # optional; sensible default per objective
+    destination_type: ON_AD              # optional
+    start_time: "2026-10-01T09:00:00-0500"
+    audience:
+      custom_locations:
+        - {latitude: 41.8781, longitude: -87.6298, radius: 25, distance_unit: mile}
+      age_min: 28
+      age_max: 55
+      interests:                          # ids from `meta-ads targeting interests basketball`
+        - {id: "6003107902433", name: Basketball}
+      platforms: [facebook, instagram]
+      advantage_audience: false           # true lets Meta expand beyond the targeting above
+    ads:
+      - name: Tryouts - gym photo
+        primary_text: "Fall tryouts are open. Ages 8-14, all skill levels welcome. Limited spots."
+        headline: "Register for tryouts"
+        description: "Two sessions, first weekend of October."
+        link: https://example.com/tryouts
+        cta: SIGN_UP
+        image_path: ./creative/tryouts-gym.jpg     # or image_url: https://... or image_hash: <existing>
+      - name: Tryouts - team photo
+        primary_text: "Your kid's next team starts here. Tryouts in October."
+        headline: "Save a spot"
+        link: https://example.com/tryouts
+        cta: SIGN_UP
+        image_url: https://example.com/team.jpg
