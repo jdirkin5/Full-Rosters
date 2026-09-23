@@ -17,6 +17,14 @@ with `META_TOKEN_VIA_PROXY=1`, so the token never appears in the session at
 all. If `whoami` fails, point the owner at `docs/RUNBOOK_META_SETUP.md`
 instead of guessing.
 
+## Multiple accounts
+
+`clients.yaml` maps a short name to each managed account's ids. Pass
+`--client <name>` before the subcommand (`meta-ads --client breakaway
+campaigns list`). Without it the `default` client is used. Always say which
+client you are acting on when you report back. If `clients.yaml` is missing,
+run `meta-ads whoami`; it prints a starting file from what the token can see.
+
 ## Operating rules (non-negotiable)
 
 1. **Approval gate.** Some commands stop with `APPROVAL REQUIRED [id]` and
@@ -36,7 +44,8 @@ instead of guessing.
    it into files, logs, commits or chat.
 6. **Report in the owner's terms.** Budgets in dollars, not cents. Names
    before ids. Short tables.
-7. **Do not widen the allowlist.** `META_AD_ACCOUNT_ID` is set by the owner.
+7. **Do not widen the allowlist.** `clients.yaml` and `META_AD_ACCOUNT_ID`
+   are edited by the owner, or by you only when the owner names the account.
 
 ## Tests
 

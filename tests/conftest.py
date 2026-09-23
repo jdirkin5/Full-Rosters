@@ -14,6 +14,7 @@ def env(tmp_path, monkeypatch):
     monkeypatch.setenv("META_PAGE_ID", "page1")
     monkeypatch.setenv("META_API_VERSION", "v23.0")
     monkeypatch.setenv("META_ADS_STATE_DIR", str(tmp_path / "state"))
+    monkeypatch.setenv("META_CLIENTS_FILE", str(tmp_path / "no-clients.yaml"))
     monkeypatch.delenv("META_MAX_DAILY_BUDGET", raising=False)
     # config.STATE_DIR is read at import; patch the module attr too.
     import meta_ads.config as cfg

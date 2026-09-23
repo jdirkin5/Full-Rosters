@@ -1,0 +1,16 @@
+# Copy to clients.yaml. One entry per ad account you manage.
+# Get the ids from `meta-ads whoami` (it prints a starting point for this file).
+# Select a client with:  meta-ads --client breakaway campaigns list
+# Ids only, no secrets, so this file is safe to commit.
+
+default: breakaway
+
+clients:
+  breakaway:
+    ad_account: act_1234567890
+    page_id: 111111111111111
+    pixel_id:                 # optional
+    instagram_actor_id:       # optional
+  other-client:
+    ad_account: act_2222222222
+    page_id: 333333333333333

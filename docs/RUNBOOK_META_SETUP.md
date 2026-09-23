@@ -63,6 +63,24 @@ later shows the ad account or Page as missing, come back here.
 
 ## Part E. Collect the ids
 
+You do not have to look these up by hand. After Part F, run `meta-ads whoami`
+in a new session: it lists every ad account and Page the System User can see,
+with ids, and prints a starting `clients.yaml` for you.
+
+### Managing several accounts
+
+Each account you manage gets an entry in `clients.yaml` (copy
+`clients.example.yaml`). Every one of those ad accounts and Pages must be
+assigned to the System User in Part C. If a client's ad account belongs to
+their own Business Portfolio, they first share it with yours as a partner
+(their Business settings -> Ad accounts -> Assign partner -> your Business
+ID), and then you assign it to the System User.
+
+Select a client per command: `meta-ads --client breakaway campaigns list`.
+Without `--client`, the `default` entry in `clients.yaml` is used.
+
+If you only want to find the ids manually:
+
 - **Ad account id**: Ads Manager URL contains `act=1234567890`. Use
   `act_1234567890`.
 - **Page id**: Page -> About -> Page transparency, or Business settings ->
@@ -100,18 +118,20 @@ The environment editor is NOT in Settings. It is in the session itself.
 
      ```
      META_TOKEN_VIA_PROXY=1
-     META_AD_ACCOUNT_ID=act_1234567890
-     META_PAGE_ID=1234567890
      ```
+
+     Account and Page ids go in `clients.yaml` in the repo (Part E), not
+     here. `META_AD_ACCOUNT_ID` / `META_PAGE_ID` still work for a
+     single-account setup.
 
    **Option 2: environment variable.** Simpler, but anyone using the
    environment (and Claude) can read it. In **Environment variables** add:
 
      ```
      META_ACCESS_TOKEN=paste_token_here
-     META_AD_ACCOUNT_ID=act_1234567890
-     META_PAGE_ID=1234567890
      ```
+
+     Account and Page ids go in `clients.yaml` (Part E).
 
    If you don't see an **API credentials** section, your plan doesn't have
    it yet; use Option 2.

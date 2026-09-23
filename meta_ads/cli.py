@@ -53,10 +53,20 @@ DRY_OPT = typer.Option(False, "--dry-run", help="Show the API call without sendi
 APPROVE_OPT = typer.Option(None, "--approve", help="Approval id from a previous run, after the human said yes.")
 
 
+_selected_client: str | None = None
+
+
+@app.callback()
+def _main(client: Optional[str] = typer.Option(None, "--client", "-c",
+                                               help="Client name from clients.yaml (sets account, page, pixel).")):
+    global _selected_client
+    _selected_client = client
+
+
 # -- shared helpers ------------------------------------------------------------
 
 def _ctx() -> tuple[Settings, MetaClient]:
-    settings = load_settings()
+    settings = load_settings(client=_selected_client)
     return settings, MetaClient(settings)
 
 
@@ -127,9 +137,12 @@ def whoami(as_json: bool = JSON_OPT):
     missing = sorted(needed - set(scopes.get("scopes", [])))
     allow = set(settings.ad_account_ids)
     visible = {a["id"] for a in accts}
+    if not allow:
+        typer.echo("NOTE: no ad account allowlisted yet; writes are disabled until clients.yaml or META_AD_ACCOUNT_ID is set.")
     cache.update(settings, accounts={a["id"]: {"name": a.get("name"), "currency": a.get("currency")} for a in accts},
                  pages={p["id"]: p.get("name") for p in pages})
     report = {
+        "client": settings.client or "(none selected)",
         "user": f"{me.get('name')} ({me.get('id')})",
         "token_type": scopes.get("type"),
         "expires": scopes.get("expires_at"),
@@ -144,12 +157,24 @@ def whoami(as_json: bool = JSON_OPT):
     if as_json:
         typer.echo(render.to_json(report))
         return
-    for k in ("user", "token_type", "expires", "scopes", "missing_scopes", "page_id_configured", "allowlist_not_visible"):
+    for k in ("client", "user", "token_type", "expires", "scopes", "missing_scopes", "page_id_configured", "allowlist_not_visible"):
         typer.echo(f"{k:22}  {report[k]}")
     typer.echo("\nAd accounts:")
     typer.echo(render.table(report["ad_accounts"]))
     typer.echo("\nPages:")
     typer.echo(render.table(report["pages"]))
+    if not settings.clients:
+        typer.echo("\nNo clients.yaml yet. Starting point (one entry per account you manage):\n")
+        typer.echo("clients:")
+        for a in accts:
+            key = "".join(ch for ch in (a.get("name") or a["id"]).lower().replace(" ", "-") if ch.isalnum() or ch == "-")
+            typer.echo(f"  {key}:")
+            typer.echo(f"    ad_account: {a['id']}   # {a.get('name')}")
+            typer.echo(f"    page_id:    # pick from Pages above")
+        if accts:
+            first = accts[0]
+            key = "".join(ch for ch in (first.get("name") or first["id"]).lower().replace(" ", "-") if ch.isalnum() or ch == "-")
+            typer.echo(f"default: {key}")
 
 
 # -- accounts / pages ----------------------------------------------------------

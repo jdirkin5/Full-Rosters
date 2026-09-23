@@ -11,7 +11,10 @@ Every command accepts `--json` for raw output and `--help` for flags.
 Money flags are whole currency units (`--daily 25` = $25.00).
 
 ## Verify
-- `meta-ads whoami` — token identity, scopes, visible ad accounts and pages.
+- `meta-ads whoami` — token identity, scopes, visible ad accounts and pages; prints a starter `clients.yaml` if none exists.
+
+## Pick the account
+- `meta-ads --client <name> <command...>` — `<name>` is a key in `clients.yaml`. Omit for the default client.
 
 ## Read
 - `meta-ads campaigns list [--status ACTIVE,PAUSED] [--limit N]`
