@@ -1,0 +1,12 @@
+# One entry per ad account you manage. Ids from `meta-ads whoami`.
+# Select a client with:  meta-ads --client breakaway campaigns list
+# Ids only, no secrets, so this file is safe to commit.
+
+default: breakaway
+
+clients:
+  breakaway:
+    ad_account: act_360804481421655   # Breakaway Basketball Meta Ads Account
+    page_id: 1532009910459386         # Breakaway Basketball
+    pixel_id:                         # optional
+    instagram_actor_id:               # optional
