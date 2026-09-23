@@ -2,12 +2,14 @@
 # Build:  meta-ads --client breakaway build specs/gba-novdec-2026.yaml --dry-run
 # Everything is created PAUSED. Activation is a separate, approved step.
 #
-# PLACEHOLDERS to resolve before the real build:
-#   [PRICE]        price per 4-week block
-#   [LOCATIONS]    gyms and towns
-#   [TIMES]        day/time by grade block
-#   image_hash     every ad uses the 4x5 Prep School image as a stand-in.
-#                  Swap for the GET BETTER image hash once it is uploaded.
+# Facts from Roster Watch (Sprocket pull, 9/22): 10 slots, 27 registrations.
+#   Hinsdale      Mon 4:15 K-1st · Wed 4:15 K-1st · Mon 6:30 4th-5th
+#   Oak Brook     Mon/Wed/Fri 4:15 K-2nd · Wed 5:15 & Fri 5:15 3rd-5th
+#   Mt Prospect   Tue 5:00 K-2nd (Nov 3-Dec 15) · Mon 5:00 K-2nd (Nov 30-Dec 14)
+#   First classes Nov 2-6. Blocks run 5-6 sessions through mid-December.
+#   Prices implied by dollars collected: $200-$300 per block. CONFIRM before launch.
+#
+# Still placeholder: image_hash on every ad (4x5 Prep School image stands in).
 
 name: GET BETTER Academy | Nov-Dec 2026 | Conversions
 objective: OUTCOME_SALES
@@ -15,21 +17,21 @@ special_ad_categories: []
 
 budget:
   daily: 120                      # $120/day, campaign level (Advantage campaign budget).
-  level: campaign                 # Meta shifts spend to whichever ad set converts.
+  level: campaign
 
 adsets:
 
   # ---------------------------------------------------------------
-  # 1. Cold: the Elmhurst–Hinsdale–Downers Grove corridor (64% of revenue)
+  # 1. Cold: the Hinsdale / Oak Brook corridor, where the classes are
   # ---------------------------------------------------------------
   - name: Corridor | Parents 28-55 | Cold
     optimization_goal: OFFSITE_CONVERSIONS
     destination_type: WEBSITE
     promoted_object:
       pixel_id: "3266615313569978"          # BAB Meta Pixel
-      custom_event_type: PURCHASE           # 193 fired last week; do NOT use content_impression
+      custom_event_type: PURCHASE           # 193 fired last week; never content_impression
     start_time: "2026-10-05T09:00:00-0500"
-    end_time:   "2026-11-09T00:00:00-0600"  # one week after first session, catches late joiners
+    end_time:   "2026-11-09T00:00:00-0600"
     audience:
       cities:
         - {key: "2439121", radius: 10, distance_unit: mile}   # Hinsdale
@@ -39,7 +41,7 @@ adsets:
       age_min: 28
       age_max: 55
       platforms: [facebook, instagram]
-      advantage_audience: true              # broad + pixel signal beats interest stacking at this budget
+      advantage_audience: true
       excluded_custom_audiences:
         - "120245875517370085"              # IG 90 Day Social Engaged  (served by the warm set)
         - "120245875534650085"              # FB 90 Day Social Engaged
@@ -49,11 +51,11 @@ adsets:
         primary_text: |
           Everyone says players are made in the offseason. Then the season starts and most kids stop getting better.
 
-          GET BETTER Academy is built for K–8th graders who want to keep improving while they're playing. Skill work first, then 3-on-3 half court where we teach kids how to play, not just let them play.
+          GET BETTER Academy is built for K–5th graders who want to keep improving while they're playing. Skill work first, then 3-on-3 half court where we teach kids how to play, not just let them play.
 
-          Two 4-week blocks starting the week of Nov 2. [LOCATIONS]. It has sold out four years running. Tap below to grab a spot.
-        headline: "GET BETTER Academy | K-8th | Starts Nov 2"
-        description: "Two 4-week blocks | [PRICE] per block"
+          Six sessions, November through mid-December, at Oak Brook and Hinsdale. It has sold out four years running. Tap below to grab a spot.
+        headline: "GET BETTER Academy | K-5th | Starts Nov 2"
+        description: "Oak Brook & Hinsdale | Nov-Dec"
         link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=inseason
         cta: SIGN_UP
         image_hash: 3bad5fce43ceeb7b1baa0df8a280601a   # PLACEHOLDER
@@ -66,26 +68,28 @@ adsets:
 
           Kids don't have more fun because they play more. They have more fun when they start having success. That's the whole point.
 
-          K–8th boys and girls. Two 4-week blocks from the week of Nov 2. [LOCATIONS], [TIMES]. Spots are limited per grade block.
+          K–5th boys and girls. Weeknight blocks at Oak Brook and Hinsdale from the week of Nov 2. Small groups per grade, so the blocks close when they fill.
         headline: "Skill Work + 3-on-3 | Coaches Who Teach"
-        description: "K-8th Boys & Girls | Nov-Dec"
+        description: "K-5th Boys & Girls | Nov-Dec"
         link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=howitworks
         cta: SIGN_UP
         image_hash: 3bad5fce43ceeb7b1baa0df8a280601a   # PLACEHOLDER
 
       - name: GBA | Dates and logistics
         primary_text: |
-          GET BETTER Academy, Nov–Dec.
+          GET BETTER Academy, Nov–Dec. Pick your player's block:
 
-          Block 1 starts the week of Nov 2. Block 2 follows in December. Sign up for one or both.
+          OAK BROOK
+          K–2nd: Mon, Wed or Fri 4:15–5:15
+          3rd–5th: Wed or Fri 5:15–6:30
 
-          [LOCATIONS]
-          [TIMES]
-          [PRICE] per 4-week block.
+          HINSDALE
+          K–1st: Mon or Wed 4:15–5:15
+          4th–5th: Mon 6:30–7:45
 
-          K–8th grade, boys and girls, any level. Small groups per coach so every kid gets reps. This is the program that has sold out the last four years, so the grade blocks close when they fill.
-        headline: "Block 1 Starts Week of Nov 2"
-        description: "Sign up for one block or both"
+          First classes the week of Nov 2, six sessions through mid-December, no class Thanksgiving week. Blocks from $200. This is the program that has sold out the last four years, so grab the slot that fits your schedule.
+        headline: "Pick Your Block | Starts Week of Nov 2"
+        description: "Oak Brook & Hinsdale | K-5th"
         link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=logistics
         cta: SIGN_UP
         image_hash: 3bad5fce43ceeb7b1baa0df8a280601a   # PLACEHOLDER
@@ -103,48 +107,48 @@ adsets:
     end_time:   "2026-11-09T00:00:00-0600"
     audience:
       cities:
-        - {key: "2439121", radius: 25, distance_unit: mile}   # Hinsdale, wide net; the audience does the narrowing
+        - {key: "2439121", radius: 25, distance_unit: mile}   # Hinsdale, wide net
         - {key: "2439832", radius: 15, distance_unit: mile}   # Mount Prospect
       age_min: 25
       age_max: 60
       platforms: [facebook, instagram]
-      advantage_audience: false             # keep this strictly warm
+      advantage_audience: false
       custom_audiences:
         - "120245875517370085"              # IG 90 Day Social Engaged  (~25-30k)
-        - "120245875534650085"              # FB 90 Day Social Engaged  (~1.1k)
-        - "23848793909500084"               # Page followers (~3.5-4k)
+        - "120245875534650085"              # FB 90 Day Social Engaged
+        - "23848793909500084"               # Page followers
         - "120252324938720085"              # Purchasers + 730 (renewals convert best)
     ads:
       - name: GBA | Warm | It's back
         primary_text: |
           GET BETTER Academy is back for Nov–Dec.
 
-          Same format that has sold out four years in a row: skill work, then 3-on-3 where the coaches actually teach. K–8th, boys and girls.
+          Same format that has sold out four years in a row: skill work, then 3-on-3 where the coaches actually teach. K–5th, boys and girls.
 
-          New this year: two 4-week blocks instead of one long session, so it's easier to fit around the season. [PRICE] per block. Starts the week of Nov 2. Grab your player's grade block before it fills.
+          Weeknight blocks at Oak Brook and Hinsdale, plus K–2nd at the Mt. Prospect RecPlex. Six sessions from the week of Nov 2. Grab your player's grade block before it fills.
         headline: "GET BETTER Academy Is Back | Nov-Dec"
-        description: "Two 4-week blocks | K-8th"
+        description: "K-5th | Oak Brook, Hinsdale, Mt. Prospect"
         link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=warm-back
         cta: SIGN_UP
         image_hash: 3bad5fce43ceeb7b1baa0df8a280601a   # PLACEHOLDER
 
-      - name: GBA | Warm | In-season reminder
+      - name: GBA | Warm | Fall block ending
         primary_text: |
-          Your player's season is starting. This is the part of the year where most kids stop improving.
+          The Sept–Oct GET BETTER block wraps up in a couple of weeks. The Nov–Dec block picks up right where it leaves off.
 
-          GET BETTER Academy keeps them working: skill development plus 3-on-3 that teaches how to play. The kids who come out of the season better are the ones who kept training through it.
+          Same gyms, same weeknight times, same coaches. Skill development plus 3-on-3 that teaches how to play. The kids who come out of the season better are the ones who kept training through it.
 
-          Week of Nov 2. [LOCATIONS]. Tap to register.
-        headline: "Keep Getting Better In Season"
-        description: "K-8th | Starts Nov 2"
-        link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=warm-inseason
+          K–5th at Oak Brook and Hinsdale, first classes the week of Nov 2. Tap to keep your player's spot.
+        headline: "Keep Going | Nov-Dec Block Is Open"
+        description: "K-5th | Starts Nov 2"
+        link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=warm-continue
         cta: SIGN_UP
         image_hash: 3bad5fce43ceeb7b1baa0df8a280601a   # PLACEHOLDER
 
   # ---------------------------------------------------------------
-  # 3. Mt Prospect on its own line. Delete this block to skip it.
+  # 3. Mt Prospect on its own line (K-2nd only there). Delete to skip.
   # ---------------------------------------------------------------
-  - name: Mt Prospect | Parents 28-55 | Cold
+  - name: Mt Prospect | Parents 28-50 | Cold
     optimization_goal: OFFSITE_CONVERSIONS
     destination_type: WEBSITE
     promoted_object:
@@ -156,7 +160,7 @@ adsets:
       cities:
         - {key: "2439832", radius: 8, distance_unit: mile}    # Mount Prospect
       age_min: 28
-      age_max: 55
+      age_max: 50                            # K-2nd parents skew younger
       platforms: [facebook, instagram]
       advantage_audience: true
       excluded_custom_audiences:
@@ -164,15 +168,15 @@ adsets:
         - "120245875534650085"
         - "120252324938720085"
     ads:
-      - name: GBA | Mt Prospect | In-season angle
+      - name: GBA | Mt Prospect | K-2nd
         primary_text: |
-          Mt. Prospect families: GET BETTER Academy runs Nov–Dec at [MT PROSPECT LOCATION].
+          Mt. Prospect families: GET BETTER Academy runs Nov–Dec at the RecPlex for K–2nd graders.
 
-          K–8th graders, boys and girls. Skill work first, then 3-on-3 half court where the coaches teach kids how to play. It's the in-season program for players who don't want to stop improving once games start.
+          Tuesdays 5:00–6:00, Nov 3 through Dec 15. Skill work first, then small-sided games where the coaches teach kids how to play. It's the in-season program for young players who are just getting started and want to keep improving once games begin.
 
-          Two 4-week blocks starting the week of Nov 2. [PRICE] per block. Spots are limited per grade.
-        headline: "GET BETTER Academy | Mt. Prospect"
-        description: "K-8th | Starts Nov 2"
+          Small groups per coach. Boys and girls. Tap to register.
+        headline: "GET BETTER Academy | Mt. Prospect RecPlex"
+        description: "K-2nd | Tuesdays from Nov 3"
         link: https://breakawaybasketball.sprocketsports.com/club/get-better-academy?utm_source=meta&utm_medium=paid&utm_campaign=gba-novdec-2026&utm_content=mtprospect
         cta: SIGN_UP
         image_hash: 3bad5fce43ceeb7b1baa0df8a280601a   # PLACEHOLDER

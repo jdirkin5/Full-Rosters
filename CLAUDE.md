@@ -54,3 +54,12 @@ python -m pytest -q
 ```
 
 All API calls in tests are mocked with `respx`; nothing touches Meta.
+
+## Live roster data
+
+The Roster Watch dashboard is republished every morning from the overnight
+Sprocket pull: https://claude.ai/artifact/PZoFagUuR8dfByUsA1KrXr
+Read it with the Artifact tool (`action: read`) at the start of any campaign
+work. Its `<script id="DATA">` JSON has every open class slot with location,
+day, time, grade, registration count and dollars collected. Prefer it over
+any dated snapshot in Drive.
