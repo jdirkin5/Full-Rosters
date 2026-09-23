@@ -8,5 +8,5 @@ clients:
   breakaway:
     ad_account: act_360804481421655   # Breakaway Basketball Meta Ads Account
     page_id: 1532009910459386         # Breakaway Basketball
-    pixel_id:                         # optional
-    instagram_actor_id:               # optional
+    pixel_id: 3266615313569978           # BAB Meta Pixel
+    instagram_actor_id: 17841404794426089  # @breakawaybball
