@@ -57,3 +57,27 @@ def test_retries_rate_limit(monkeypatch):
         ]
         assert MetaClient(s).get("me")["id"] == "me"
     assert route.call_count == 2
+
+
+def test_proxy_mode_sends_no_token(monkeypatch):
+    monkeypatch.delenv("META_ACCESS_TOKEN")
+    monkeypatch.setenv("META_TOKEN_VIA_PROXY", "1")
+    s = load_settings()
+    assert s.token_via_proxy and not s.access_token
+    with respx.mock() as mock:
+        route = mock.get(f"{BASE}/me").respond(json={"id": "1"})
+        MetaClient(s).get("me")
+    assert "access_token" not in str(route.calls[0].request.url)
+
+
+def test_proxy_mode_whoami_uses_permissions(monkeypatch):
+    monkeypatch.delenv("META_ACCESS_TOKEN")
+    monkeypatch.setenv("META_TOKEN_VIA_PROXY", "1")
+    from meta_ads.resources.accounts import token_scopes
+    s = load_settings()
+    with respx.mock() as mock:
+        mock.get(f"{BASE}/me/permissions").respond(json={"data": [
+            {"permission": "ads_management", "status": "granted"},
+            {"permission": "pages_manage_ads", "status": "declined"}]})
+        out = token_scopes(MetaClient(s))
+    assert out["scopes"] == ["ads_management"]

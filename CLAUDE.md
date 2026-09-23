@@ -11,9 +11,11 @@ python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
 meta-ads whoami
 ```
 
-Token and ids come from environment variables (see `.env.example`). If
-`whoami` fails, point the owner at `docs/RUNBOOK_META_SETUP.md` instead of
-guessing.
+Token and ids come from the cloud environment (see `.env.example`). The
+preferred setup stores the token as an API credential on the environment
+with `META_TOKEN_VIA_PROXY=1`, so the token never appears in the session at
+all. If `whoami` fails, point the owner at `docs/RUNBOOK_META_SETUP.md`
+instead of guessing.
 
 ## Operating rules (non-negotiable)
 

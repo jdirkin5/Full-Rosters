@@ -56,7 +56,9 @@ class MetaClient:
                 data: dict[str, Any] | None = None, files: dict[str, Any] | None = None) -> Any:
         url = self._url(path)
         q = self._encode(params)
-        q["access_token"] = self.settings.access_token
+        if self.settings.access_token:
+            q["access_token"] = self.settings.access_token
+        # else: the cloud environment's agent proxy attaches "Authorization: Bearer <token>"
         body = self._encode(data) if data else None
         attempt = 0
         while True:

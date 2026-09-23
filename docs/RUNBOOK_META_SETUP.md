@@ -75,22 +75,53 @@ later shows the ad account or Page as missing, come back here.
 
 ### Claude Code on the web (this repo's sessions)
 
-1. Open https://claude.ai/code, go to the environment this repo uses, and
-   edit it.
-2. Under **Environment variables** add:
+The environment editor is NOT in Settings. It is in the session itself.
 
-   | Name | Value |
-   |---|---|
-   | `META_ACCESS_TOKEN` | the token from Part D |
-   | `META_AD_ACCOUNT_ID` | `act_...` |
-   | `META_PAGE_ID` | the Page id |
-   | `META_PIXEL_ID` | optional |
-   | `META_INSTAGRAM_ACTOR_ID` | optional |
+1. Go to https://claude.ai/code and open any session (or start a new one).
+2. Look just above the message box for a small cloud button showing the
+   environment name, usually **Default**. Click it.
+3. In the menu that opens, under **Cloud**, hover over **Default** and click
+   the **gear icon** that appears on the right. The **Update cloud
+   environment** dialog opens.
+4. **Network access**: change **Trusted** to **Custom**. In **Allowed
+   domains** type `graph.facebook.com`. Tick **Also include default list of
+   common package managers** so pip still works.
+5. Add the token, using ONE of these two ways:
 
-3. Under **Network access**, make sure `graph.facebook.com` is allowed. The
-   default limited policy blocks it. Docs:
-   https://code.claude.com/docs/en/claude-code-on-the-web
-4. Start a new session so the variables are picked up.
+   **Option 1, preferred (Pro and Max plans): API credential.** Claude never
+   sees the token; Anthropic's proxy attaches it to requests as they leave
+   the sandbox.
+   - Scroll to **API credentials** (below Environment variables) and click
+     **Add credential**.
+   - Credential type: **Bearer**. Hosts: `graph.facebook.com`.
+   - Custom headers: keep the row with Name `Authorization` and Prefix
+     `Bearer`, and paste the token as the **Value**.
+   - Then in **Environment variables** add the ids and the proxy flag:
+
+     ```
+     META_TOKEN_VIA_PROXY=1
+     META_AD_ACCOUNT_ID=act_1234567890
+     META_PAGE_ID=1234567890
+     ```
+
+   **Option 2: environment variable.** Simpler, but anyone using the
+   environment (and Claude) can read it. In **Environment variables** add:
+
+     ```
+     META_ACCESS_TOKEN=paste_token_here
+     META_AD_ACCOUNT_ID=act_1234567890
+     META_PAGE_ID=1234567890
+     ```
+
+   If you don't see an **API credentials** section, your plan doesn't have
+   it yet; use Option 2.
+
+6. Optional extra lines for either option: `META_PIXEL_ID=`,
+   `META_INSTAGRAM_ACTOR_ID=`, `META_MAX_DAILY_BUDGET=`.
+7. Click **Update environment** (or Save).
+8. Start a **new** session. Running sessions keep the old values.
+
+Docs: https://code.claude.com/docs/en/cloud-environments
 
 ### Local machine
 
@@ -115,4 +146,4 @@ Common failures:
 | Page not listed under Pages | Part C step 2: assign the Page with Manage. |
 | `(#10) Application does not have permission for this action` | Part A step 3: Marketing API product not added, or app not assigned to the System User. |
 | `allowlist_not_visible` shows your account | The id in `META_AD_ACCOUNT_ID` does not match what the token can see. Check the `act_` prefix and the number. |
-| `CONNECT tunnel failed, response 403` | The environment's network policy blocks `graph.facebook.com` (Part F step 3). |
+| `CONNECT tunnel failed, response 403` | The environment's network access is still Trusted; set it to Custom and allow `graph.facebook.com` (Part F step 4). |

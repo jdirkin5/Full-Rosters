@@ -17,6 +17,17 @@ def me(client: MetaClient) -> dict[str, Any]:
 
 
 def token_scopes(client: MetaClient) -> dict[str, Any]:
+    if not client.settings.access_token:
+        # Token lives in the environment's API credential; we never see it, so
+        # debug_token is unavailable. /me/permissions still reports grants.
+        perms = client.get("me/permissions").get("data", [])
+        return {
+            "type": "via API credential (proxy)",
+            "app_id": None,
+            "expires_at": "unknown (not visible in proxy mode)",
+            "is_valid": True,
+            "scopes": [p["permission"] for p in perms if p.get("status") == "granted"],
+        }
     data = client.get("debug_token", input_token=client.settings.access_token).get("data", {})
     return {
         "type": data.get("type"),

@@ -21,6 +21,7 @@ class Settings:
     api_version: str = "v23.0"
     budget_change_approval_pct: float = 10.0
     max_daily_budget: float | None = None  # whole currency units
+    token_via_proxy: bool = False  # token attached by the cloud environment's API credential, not by us
     state_dir: Path = field(default_factory=lambda: STATE_DIR)
 
     @property
@@ -42,9 +43,11 @@ def _clean(v: str | None) -> str | None:
 def load_settings(require_token: bool = True) -> Settings:
     load_dotenv(override=False)
     token = _clean(os.environ.get("META_ACCESS_TOKEN"))
-    if require_token and not token:
+    via_proxy = (_clean(os.environ.get("META_TOKEN_VIA_PROXY")) or "").lower() in ("1", "true", "yes")
+    if require_token and not token and not via_proxy:
         raise ConfigError(
-            "META_ACCESS_TOKEN is not set. See docs/RUNBOOK_META_SETUP.md for how to create one."
+            "META_ACCESS_TOKEN is not set (or set META_TOKEN_VIA_PROXY=1 if the token is an API credential "
+            "on the cloud environment). See docs/RUNBOOK_META_SETUP.md Part F."
         )
     raw_accounts = _clean(os.environ.get("META_AD_ACCOUNT_ID")) or ""
     accounts = []
@@ -66,4 +69,5 @@ def load_settings(require_token: bool = True) -> Settings:
         api_version=_clean(os.environ.get("META_API_VERSION")) or "v23.0",
         budget_change_approval_pct=float(_clean(os.environ.get("META_BUDGET_CHANGE_APPROVAL_PCT")) or 10),
         max_daily_budget=float(max_budget) if max_budget else None,
+        token_via_proxy=via_proxy,
     )
